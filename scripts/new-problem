@@ -7,6 +7,11 @@ usage() {
   echo "Usage: scripts/new-problem <contest> <task-id> <url>" >&2
 }
 
+if [ "$#" -eq 1 ] && [ "$1" = "--help" ]; then
+  usage
+  exit 0
+fi
+
 if [ "$#" -ne 3 ]; then
   usage
   exit 1
@@ -17,10 +22,11 @@ task_id="$2"
 url="$3"
 
 problem_dir="$REPO_ROOT/practice/atcoder/$contest/$task_id"
-note_dir="$REPO_ROOT/notes/atcoder/$contest"
-note_file="$note_dir/$task_id.md"
 
-mkdir -p "$problem_dir" "$note_dir"
+require_command "cargo" "cargo が見つかりません。Rust stable を有効にしてください: rustup default stable"
+require_command "oj" "oj が見つかりません。先に実行してください: nix --extra-experimental-features \"nix-command flakes\" develop"
+
+mkdir -p "$problem_dir"
 
 created_cargo=0
 if [ ! -f "$problem_dir/Cargo.toml" ]; then
@@ -33,13 +39,32 @@ if [ "$created_cargo" -eq 1 ] || [ ! -f "$main_file" ]; then
   cat > "$main_file" <<'EOF'
 use std::io::{self, Read};
 
+struct Scanner {
+    input: Vec<String>,
+    index: usize,
+}
+
+impl Scanner {
+    fn new() -> Self {
+        let mut input = String::new();
+        io::stdin().read_to_string(&mut input).unwrap();
+        let input = input.split_whitespace().map(|s| s.to_string()).collect();
+
+        Scanner { input, index: 0 }
+    }
+
+    fn next<T: std::str::FromStr>(&mut self) -> T {
+        let value = self.input[self.index].parse::<T>().ok().unwrap();
+        self.index += 1;
+        value
+    }
+}
+
 fn main() {
-    let mut input = String::new();
-    io::stdin().read_to_string(&mut input).unwrap();
-    let mut iter = input.split_whitespace();
+    let mut sc = Scanner::new();
 
     // TODO: implement
-    let _ = &mut iter;
+    let _ = &mut sc;
 }
 EOF
 else
@@ -53,28 +78,10 @@ fi
 
 printf '%s\n' "$url" > "$problem_dir/.atcoder-task-url"
 
-if [ ! -f "$note_file" ]; then
-  cat > "$note_file" <<EOF
-# $task_id
-
-- 日付:
-- 問題:
-- URL: $url
-- テーマ:
-- 解法概要:
-- 計算量:
-- 詰まった点:
-- Rustで詰まった点:
-- 追加すべきテストケース:
-- 次に解く類題:
-EOF
-fi
-
 echo "Created: $problem_dir"
-echo "Note: $note_file"
 echo
 echo "Next:"
 echo "  cd $problem_dir"
 echo "  \$EDITOR src/main.rs"
 echo "  at-test"
-echo "  at-submit"
+echo "  at-submit  # ブラウザ提出用の情報を表示"

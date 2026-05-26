@@ -12,4 +12,4 @@ if [ "$#" -ne 0 ]; then
 fi
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-exec "$script_dir/submit"
+exec "$script_dir/submit" "$@"

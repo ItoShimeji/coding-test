@@ -25,11 +25,23 @@ if [ -f "$problem_dir/.atcoder-task-url" ]; then
   IFS= read -r task_url < "$problem_dir/.atcoder-task-url" || true
 fi
 
-(
-  cd "$problem_dir"
-  if [ -n "$task_url" ]; then
-    oj s "$task_url" src/main.rs
-  else
-    oj s src/main.rs
-  fi
-)
+if [ -z "$task_url" ]; then
+  die ".atcoder-task-url not found or empty: $problem_dir"
+fi
+
+contest_id="${task_url#https://atcoder.jp/contests/}"
+contest_id="${contest_id%%/*}"
+task_id="${task_url##*/}"
+submit_url="https://atcoder.jp/contests/$contest_id/submit"
+
+cat <<EOF
+ブラウザで提出してください。
+
+URL:    $submit_url
+問題:   $task_id
+言語:   Rust
+提出元: $problem_dir/src/main.rs
+
+提出前に確認:
+  at-test
+EOF

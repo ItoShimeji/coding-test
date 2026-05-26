@@ -18,6 +18,8 @@ if ! problem_dir="$(resolve_problem_dir "$@")"; then
 fi
 
 require_file "$problem_dir/Cargo.toml" "Cargo.toml not found: $problem_dir"
+require_command "oj" "oj が見つかりません。先に実行してください: nix --extra-experimental-features \"nix-command flakes\" develop"
+require_command "cargo" "cargo が見つかりません。Rust stable を有効にしてください: rustup default stable"
 
 (
   cd "$problem_dir"

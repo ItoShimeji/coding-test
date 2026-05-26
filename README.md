@@ -16,21 +16,20 @@ Nix dev shell に入ります。
 nix --extra-experimental-features "nix-command flakes" develop
 ```
 
-AtCoder への提出には `oj` のログイン状態が必要です。確認:
+この環境での `oj` の役割は、サンプル取得とサンプルテストだけです。
+AtCoder への提出はブラウザで行うため、`oj login` と `oj submit` は使いません。
 
-```bash
-oj login --check https://atcoder.jp/
-```
+ブラウザで AtCoder にログインしておいてください。
 
-`oj login` が通らない場合は、ブラウザで AtCoder にログインしてから `REVEL_SESSION` Cookie を次のファイルへ反映します。
+## `oj` の責務
 
-```text
-/Users/itoushinji/Library/Application Support/online-judge-tools/cookie.jar
-```
+- `scripts/new-problem`: `oj d <url>` でサンプルを取得する
+- `at-test`: `oj t -c "cargo run --quiet"` でサンプルテストを実行する
+- `at-submit`: `oj` は使わず、ブラウザ提出に必要な情報を表示する
 
 ## 1問の流れ
 
-問題ディレクトリ、Cargo プロジェクト、サンプル、復習ログを作成します。
+問題ディレクトリ、Cargo プロジェクト、サンプルを作成します。
 
 ```bash
 scripts/new-problem abs abc086_a https://atcoder.jp/contests/abs/tasks/abc086_a
@@ -55,11 +54,13 @@ at-test
 at-submit
 ```
 
+`at-submit` が表示した URL をブラウザで開き、対象問題と言語 Rust を選んで `src/main.rs` を提出します。
+
 リポジトリルートから実行する場合:
 
 ```bash
 scripts/test abs abc086_a
-scripts/submit abs abc086_a
+scripts/submit abs abc086_a   # ブラウザ提出用の情報を表示
 ```
 
 ## ディレクトリ構成
@@ -76,10 +77,6 @@ practice/
         test/
           sample-1.in
           sample-1.out
-notes/
-  atcoder/
-    abs/
-      abc086_a.md
 scripts/
   at-test
   at-submit
@@ -87,21 +84,4 @@ scripts/
   new-problem
   test
   submit
-```
-
-## 復習ログ
-
-`scripts/new-problem` は `notes/atcoder/<contest>/<task-id>.md` に次の雛形を作ります。
-
-```md
-- 日付:
-- 問題:
-- URL:
-- テーマ:
-- 解法概要:
-- 計算量:
-- 詰まった点:
-- Rustで詰まった点:
-- 追加すべきテストケース:
-- 次に解く類題:
 ```

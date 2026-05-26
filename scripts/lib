@@ -26,3 +26,12 @@ require_file() {
     die "$message"
   fi
 }
+
+require_command() {
+  local command_name="$1"
+  local message="$2"
+
+  if ! command -v "$command_name" >/dev/null 2>&1; then
+    die "$message"
+  fi
+}
