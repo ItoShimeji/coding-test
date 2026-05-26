@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib"
+
+usage() {
+  echo "Usage: scripts/new-problem <contest> <task-id> <url>" >&2
+}
+
+if [ "$#" -ne 3 ]; then
+  usage
+  exit 1
+fi
+
+contest="$1"
+task_id="$2"
+url="$3"
+
+problem_dir="$REPO_ROOT/practice/atcoder/$contest/$task_id"
+note_dir="$REPO_ROOT/notes/atcoder/$contest"
+note_file="$note_dir/$task_id.md"
+
+mkdir -p "$problem_dir" "$note_dir"
+
+created_cargo=0
+if [ ! -f "$problem_dir/Cargo.toml" ]; then
+  cargo init --bin "$problem_dir"
+  created_cargo=1
+fi
+
+main_file="$problem_dir/src/main.rs"
+if [ "$created_cargo" -eq 1 ] || [ ! -f "$main_file" ]; then
+  cat > "$main_file" <<'EOF'
+use std::io::{self, Read};
+
+fn main() {
+    let mut input = String::new();
+    io::stdin().read_to_string(&mut input).unwrap();
+    let mut iter = input.split_whitespace();
+
+    // TODO: implement
+    let _ = &mut iter;
+}
+EOF
+else
+  echo "Kept existing: $main_file"
+fi
+
+(
+  cd "$problem_dir"
+  oj d "$url"
+)
+
+printf '%s\n' "$url" > "$problem_dir/.atcoder-task-url"
+
+if [ ! -f "$note_file" ]; then
+  cat > "$note_file" <<EOF
+# $task_id
+
+- 日付:
+- 問題:
+- URL: $url
+- テーマ:
+- 解法概要:
+- 計算量:
+- 詰まった点:
+- Rustで詰まった点:
+- 追加すべきテストケース:
+- 次に解く類題:
+EOF
+fi
+
+echo "Created: $problem_dir"
+echo "Note: $note_file"
+echo
+echo "Next:"
+echo "  cd $problem_dir"
+echo "  \$EDITOR src/main.rs"
+echo "  at-test"
+echo "  at-submit"

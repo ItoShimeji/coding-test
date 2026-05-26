@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib"
+
+usage() {
+  echo "Usage: scripts/submit [<contest> <task-id>]" >&2
+}
+
+if [ "$#" -eq 1 ] && [ "$1" = "--help" ]; then
+  usage
+  exit 0
+fi
+
+if ! problem_dir="$(resolve_problem_dir "$@")"; then
+  usage
+  exit 1
+fi
+
+require_file "$problem_dir/Cargo.toml" "Cargo.toml not found: $problem_dir"
+require_file "$problem_dir/src/main.rs" "src/main.rs not found: $problem_dir"
+
+task_url=""
+if [ -f "$problem_dir/.atcoder-task-url" ]; then
+  IFS= read -r task_url < "$problem_dir/.atcoder-task-url" || true
+fi
+
+(
+  cd "$problem_dir"
+  if [ -n "$task_url" ]; then
+    oj s "$task_url" src/main.rs
+  else
+    oj s src/main.rs
+  fi
+)

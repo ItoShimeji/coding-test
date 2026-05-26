@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+die() {
+  echo "$*" >&2
+  exit 1
+}
+
+resolve_problem_dir() {
+  if [ "$#" -eq 0 ]; then
+    pwd
+  elif [ "$#" -eq 2 ]; then
+    printf '%s\n' "$REPO_ROOT/practice/atcoder/$1/$2"
+  else
+    return 64
+  fi
+}
+
+require_file() {
+  local path="$1"
+  local message="$2"
+
+  if [ ! -f "$path" ]; then
+    die "$message"
+  fi
+}

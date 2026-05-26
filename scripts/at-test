@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ "$#" -eq 1 ] && [ "$1" = "--help" ]; then
+  echo "Usage: at-test"
+  exit 0
+fi
+
+if [ "$#" -ne 0 ]; then
+  echo "Usage: at-test" >&2
+  exit 1
+fi
+
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+exec "$script_dir/test"
