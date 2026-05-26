@@ -26,11 +26,7 @@ fn main() {
     let input: String = sc.next();
     // let a = b"
 
-    let output = input
-        .as_bytes()
-        .iter()
-        .filter(|&&x| x == "1".as_bytes()[0])
-        .count();
+    let output = input.bytes().filter(|&s| s == b'1').count();
 
     println!("{}", output);
 }
