@@ -45,3 +45,48 @@ fn main() {
 
     println!("{count}");
 }
+
+// dp で書くなら
+// use std::io::{self, Read};
+
+// fn main() {
+//     let mut input = String::new();
+//     io::stdin().read_to_string(&mut input).unwrap();
+
+//     let nums: Vec<usize> = input
+//         .split_whitespace()
+//         .map(|s| s.parse().unwrap())
+//         .collect();
+
+//     let a = nums[0];
+//     let b = nums[1];
+//     let c = nums[2];
+//     let x = nums[3];
+
+//     let coins = vec![(500, a), (100, b), (50, c)];
+
+//     let mut dp = vec![0usize; x + 1];
+//     dp[0] = 1;
+
+//     for (value, limit) in coins {
+//         let mut next_dp = vec![0usize; x + 1];
+
+//         for amount in 0..=x {
+//             if dp[amount] == 0 {
+//                 continue;
+//             }
+
+//             for count in 0..=limit {
+//                 let next_amount = amount + value * count;
+
+//                 if next_amount <= x {
+//                     next_dp[next_amount] += dp[amount];
+//                 }
+//             }
+//         }
+
+//         dp = next_dp;
+//     }
+
+//     println!("{}", dp[x]);
+// }
