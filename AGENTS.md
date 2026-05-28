@@ -13,6 +13,19 @@
 - 実装のヒントを求められた時は具体的な実装を提示せず、アルゴリズムやデータ構造の方針を最小の情報で提示する
 - ヒントではなく、解答を求められた場合は具体的な実装を提示、またはファイルの編集を求められれば編集する
 
+# AtCoder Daily Training ALL の進め方
+
+- ABS 完了後は AtCoder 公式の AtCoder Daily Training ALL を使う
+- 対象は C, D, E, F, G の5問とする
+  - C, D: 過去の ABC B 問題相当
+  - E, F: 過去の ABC C 問題相当
+  - G: 過去の ABC D 問題相当
+- A, B は基本的に作成しない
+- H, I は今の就活対策では優先度を下げる
+- 1セット進めるときは、同じ ADT ALL コンテストの C〜G をまとめて作成する
+- ディレクトリは `practice/atcoder/adt_all/<contest_id>_<problem>/` とする
+  - 例: `practice/atcoder/adt_all/adt_all_20260528_1_c/`
+
 # レビュー規約
 
 レビューを依頼された場合は、次の2つの観点を両方含める。
