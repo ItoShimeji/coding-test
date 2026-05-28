@@ -35,38 +35,23 @@ fn main() {
     let mut sc = Scanner::new();
     let s: String = sc.next();
 
-    let message = if solve(s) { "YES" } else { "NO" };
+    let message = if solve(&s) { "YES" } else { "NO" };
     println!("{}", message);
 }
 
-fn solve(s: String) -> bool {
-    let mut start: isize = s.len() as isize;
-    let mut end = s.len();
-
-    while end != 0 {
-        // println!("{} {}", start, end);
-        let str = &s[0..end];
-        start -= if str.ends_with("mer") {
-            7
-        } else if str.ends_with("ser") {
-            6
+fn solve(mut s: &str) -> bool {
+    while !s.is_empty() {
+        if let Some(rest) = s.strip_suffix("dream") {
+            s = rest;
+        } else if let Some(rest) = s.strip_suffix("dreamer") {
+            s = rest;
+        } else if let Some(rest) = s.strip_suffix("erase") {
+            s = rest;
+        } else if let Some(rest) = s.strip_suffix("eraser") {
+            s = rest;
         } else {
-            5
-        };
-
-        if start < 0 {
             return false;
         }
-
-        match &s[start as usize..end] {
-            "dream" => (),
-            "dreamer" => (),
-            "erase" => (),
-            "eraser" => (),
-            _ => return false,
-        }
-
-        end = start as usize;
     }
 
     true
