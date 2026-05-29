@@ -33,7 +33,46 @@ impl Scanner {
 
 fn main() {
     let mut sc = Scanner::new();
+    let n: usize = sc.next();
+    let k: usize = sc.next();
 
-    // TODO: implement
-    let _ = &mut sc;
+    let s_list: Vec<Vec<u8>> = (0..n).map(|_| sc.next::<String>().into_bytes()).collect();
+
+    let mut max = 0;
+    let mut counts = vec![0usize; 26];
+
+    for mask in 0..1usize << n {
+        counts = vec![0; 26];
+        for (i, s) in s_list.iter().enumerate() {
+            if is_selected(mask, i) {
+                add_to_counts(&mut counts, s);
+            }
+        }
+
+        if let Some(result) = count(k, &counts)
+            && max < result
+        {
+            max = result
+        }
+    }
+
+    println!("{max}");
+}
+
+fn count(k: usize, counts: &Vec<usize>) -> Option<usize> {
+    let max_count = counts.iter().max().copied().unwrap_or(0);
+    if max_count == k {
+        return Some(counts.iter().filter(|&&c| c == k).count());
+    }
+    None
+}
+
+fn is_selected(mask: usize, i: usize) -> bool {
+    (mask & (1usize << i)) != 0
+}
+
+fn add_to_counts(counts: &mut Vec<usize>, s: &Vec<u8>) {
+    for &c in s {
+        counts[c as usize - 97] += 1;
+    }
 }
