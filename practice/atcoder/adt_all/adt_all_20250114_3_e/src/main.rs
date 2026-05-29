@@ -33,7 +33,28 @@ impl Scanner {
 
 fn main() {
     let mut sc = Scanner::new();
+    let h: usize = sc.next();
+    let w: usize = sc.next();
 
-    // TODO: implement
-    let _ = &mut sc;
+    let mut s_list: Vec<Vec<u8>> = (0..h).map(|_| sc.next::<String>().into_bytes()).collect();
+
+    for s in &mut s_list {
+        let mut j = 0;
+        while j < w - 1 {
+            if s[j] == b'T' {
+                if s[j + 1] == b'T' {
+                    s[j] = b'P';
+                    s[j + 1] = b'C';
+                }
+
+                j += 2;
+            } else {
+                j += 1;
+            }
+        }
+    }
+
+    for s in &s_list {
+        println!("{}", std::str::from_utf8(s).unwrap());
+    }
 }
