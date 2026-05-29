@@ -42,7 +42,7 @@ fn main() {
 
     // 外側の vec は a, b, c
     // 内側はそれぞれの行で使用されたか
-    let mut result = vec![vec![b','; n]; n];
+    let mut result = vec![vec![b'.'; n]; n];
 
     // それぞれの列の最も上の記号の vec
     let mut first_c_list: Vec<Option<u8>> = vec![None; n];
