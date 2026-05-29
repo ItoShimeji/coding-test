@@ -37,29 +37,21 @@ impl Scanner {
 fn main() {
     let mut sc = Scanner::new();
 
-    let a: usize = sc.next();
-    let mut digit_list_a: VecDeque<usize> = VecDeque::new();
-    split_to_digit(a, &mut digit_list_a);
-
-    let b: usize = sc.next();
-    let mut digit_list_b: VecDeque<usize> = VecDeque::new();
-    split_to_digit(b, &mut digit_list_b);
+    let mut a: usize = sc.next();
+    let mut b: usize = sc.next();
 
     let mut is_easy = true;
-    while let (Some(d_a), Some(d_b)) = (digit_list_a.pop_back(), digit_list_b.pop_back()) {
-        if d_a + d_b >= 10 {
+
+    // 小さい桁から順に見ていけば良い
+    while a > 0 || b > 0 {
+        if a % 10 + b % 10 >= 10 {
             is_easy = false;
+            break;
         }
+
+        a /= 10;
+        b /= 10;
     }
 
-    println!("{}", if is_easy { "Easy" } else { "Hard" })
-}
-
-fn split_to_digit(n: usize, digit_list: &mut VecDeque<usize>) {
-    if n < 10 {
-        digit_list.push_front(n);
-        return;
-    }
-    digit_list.push_front(n % 10);
-    split_to_digit(n / 10, digit_list);
+    println!("{}", if is_easy { "Easy" } else { "Hard" });
 }
