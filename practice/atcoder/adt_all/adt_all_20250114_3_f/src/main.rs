@@ -33,7 +33,20 @@ impl Scanner {
 
 fn main() {
     let mut sc = Scanner::new();
+    let n: usize = sc.next();
+    let t: usize = sc.next();
 
-    // TODO: implement
-    let _ = &mut sc;
+    let a_list: Vec<usize> = (0..n).map(|_| sc.next::<usize>()).collect();
+    let sum: usize = a_list.iter().sum();
+
+    let mut extra = t % sum;
+
+    for (i, &a) in a_list.iter().enumerate() {
+        if extra < a {
+            println!("{} {}", i + 1, extra);
+            break;
+        } else {
+            extra -= a;
+        }
+    }
 }
