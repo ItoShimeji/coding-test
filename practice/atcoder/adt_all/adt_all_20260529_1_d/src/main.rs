@@ -1,4 +1,7 @@
-use std::io::{self, Read};
+use std::{
+    collections::VecDeque,
+    io::{self, Read},
+};
 
 struct Scanner {
     input: Vec<u8>,
@@ -33,7 +36,25 @@ impl Scanner {
 
 fn main() {
     let mut sc = Scanner::new();
+    let q: usize = sc.next();
 
-    // TODO: implement
-    let _ = &mut sc;
+    let mut queue: VecDeque<usize> = VecDeque::new();
+
+    let mut has_printed = false;
+    for _ in 0..q {
+        let q_type: usize = sc.next();
+
+        match q_type {
+            1 => queue.push_back(sc.next::<usize>()),
+            2 => {
+                has_printed = true;
+                println!("{}", queue.pop_front().unwrap());
+            }
+            _ => unreachable!(),
+        }
+    }
+
+    if !has_printed {
+        println!()
+    }
 }
