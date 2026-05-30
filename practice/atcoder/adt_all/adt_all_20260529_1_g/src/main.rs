@@ -63,6 +63,8 @@ impl Circle {
     }
 }
 
+// グラフ的に説くのではなく、UnionFind を使用することで効率的に解くことができる
+// ある要素と他の要素が同じ集合に属するかどうかを高速に判定することができる
 fn main() {
     let mut sc = Scanner::new();
     let n: usize = sc.next();
@@ -119,7 +121,7 @@ fn main() {
 
         for &a in &adj[c] {
             if !is_used[a] {
-                is_used[c] = true;
+                is_used[a] = true;
                 queue.push_back(a);
             }
         }
