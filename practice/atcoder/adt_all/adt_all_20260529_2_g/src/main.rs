@@ -1,7 +1,4 @@
-use std::{
-    io::{self, Read},
-    usize,
-};
+use std::io::{self, Read};
 
 struct Scanner {
     input: Vec<u8>,
@@ -37,34 +34,72 @@ impl Scanner {
 fn main() {
     let mut sc = Scanner::new();
     let n: usize = sc.next();
-    let players: Vec<(usize, usize)> = (0..n).map(|_| (sc.next(), sc.next())).collect();
 
-    let mut min_day = usize::MAX;
-    let mut max_day = 1;
-
-    for &p in &players {
-        min_day = min_day.min(p.0);
-        max_day = max_day.max(p.0 + p.1);
+    let mut login_list: Vec<usize> = Vec::with_capacity(n);
+    let mut logout_list: Vec<usize> = Vec::with_capacity(n);
+    for _ in 0..n {
+        let a: usize = sc.next();
+        let b: usize = sc.next();
+        login_list.push(a);
+        logout_list.push(a + b);
     }
 
-    let mut day_counts = vec![0; n];
+    // 取り出しやすいように逆順にソート
+    login_list.sort_by(|a, b| b.cmp(a));
+    logout_list.sort_by(|a, b| b.cmp(a));
 
-    for i in min_day..max_day {
-        let mut online_count: usize = 0;
-        for &p in &players {
-            if p.0 <= i && i < p.0 + p.1 {
-                online_count += 1;
+    let mut next_login = login_list.pop();
+    let mut next_logout = logout_list.pop();
+    let mut player_count = 0;
+    // 前回人数が変化したときの日にちを記録
+    let mut prev = 0;
+
+    let mut result = vec![0; n];
+
+    loop {
+        match (next_login, next_logout) {
+            (Some(next_login_day), Some(next_logout_day)) => {
+                // logout_day はその日を含まなず、その前の日にログアウトしているため、
+                // = はつかない
+                if next_login_day < next_logout_day {
+                    // 誰かがログインした
+
+                    if player_count > 0 {
+                        let duration = next_login_day - prev;
+                        result[player_count - 1] += duration;
+                    }
+
+                    player_count += 1;
+                    prev = next_login_day;
+                    next_login = login_list.pop();
+                } else {
+                    // だれかがログアウトした
+
+                    let duration = next_logout_day - prev;
+                    result[player_count - 1] += duration;
+
+                    player_count -= 1;
+                    prev = next_logout_day;
+                    next_logout = logout_list.pop();
+                }
             }
-        }
+            (None, Some(next_logout_day)) => {
+                // だれかがログアウトした
 
-        if online_count != 0 {
-            day_counts[online_count - 1] += 1;
+                let duration = next_logout_day - prev;
+                result[player_count - 1] += duration;
+
+                player_count -= 1;
+                prev = next_logout_day;
+                next_logout = logout_list.pop();
+            }
+            _ => break,
         }
     }
 
     println!(
         "{}",
-        day_counts
+        result
             .iter()
             .map(|c| c.to_string())
             .collect::<Vec<String>>()
