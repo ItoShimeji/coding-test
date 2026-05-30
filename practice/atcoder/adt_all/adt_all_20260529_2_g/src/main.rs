@@ -1,4 +1,7 @@
-use std::io::{self, Read};
+use std::{
+    io::{self, Read},
+    usize,
+};
 
 struct Scanner {
     input: Vec<u8>,
@@ -33,7 +36,38 @@ impl Scanner {
 
 fn main() {
     let mut sc = Scanner::new();
+    let n: usize = sc.next();
+    let players: Vec<(usize, usize)> = (0..n).map(|_| (sc.next(), sc.next())).collect();
 
-    // TODO: implement
-    let _ = &mut sc;
+    let mut min_day = usize::MAX;
+    let mut max_day = 1;
+
+    for &p in &players {
+        min_day = min_day.min(p.0);
+        max_day = max_day.max(p.0 + p.1);
+    }
+
+    let mut day_counts = vec![0; n];
+
+    for i in min_day..max_day {
+        let mut online_count: usize = 0;
+        for &p in &players {
+            if p.0 <= i && i < p.0 + p.1 {
+                online_count += 1;
+            }
+        }
+
+        if online_count != 0 {
+            day_counts[online_count - 1] += 1;
+        }
+    }
+
+    println!(
+        "{}",
+        day_counts
+            .iter()
+            .map(|c| c.to_string())
+            .collect::<Vec<String>>()
+            .join(" ")
+    )
 }
