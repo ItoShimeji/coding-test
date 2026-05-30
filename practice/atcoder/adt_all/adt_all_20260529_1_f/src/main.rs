@@ -49,22 +49,15 @@ fn main() {
             }
         }
 
-        if let Some(result) = count(k, &counts)
-            && max < result
-        {
-            max = result
-        }
+        let result = count(k, &counts);
+        max = if max < result { result } else { max };
     }
 
     println!("{max}");
 }
 
-fn count(k: usize, counts: &Vec<usize>) -> Option<usize> {
-    let max_count = counts.iter().max().copied().unwrap_or(0);
-    if max_count == k {
-        return Some(counts.iter().filter(|&&c| c == k).count());
-    }
-    None
+fn count(k: usize, counts: &Vec<usize>) -> usize {
+    counts.iter().filter(|&&c| c == k).count()
 }
 
 fn is_selected(mask: usize, i: usize) -> bool {
