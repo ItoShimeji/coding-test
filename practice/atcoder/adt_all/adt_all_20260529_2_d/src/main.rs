@@ -33,7 +33,16 @@ impl Scanner {
 
 fn main() {
     let mut sc = Scanner::new();
+    let n: usize = sc.next();
+    let p: usize = sc.next();
 
-    // TODO: implement
-    let _ = &mut sc;
+    let mut count = 0;
+    for _ in 0..n {
+        let a: usize = sc.next();
+        if a < p {
+            count += 1;
+        }
+    }
+
+    println!("{count}");
 }
