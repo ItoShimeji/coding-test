@@ -45,48 +45,46 @@ fn main() {
     }
     a_list.push(l);
 
-    // それぞれの切れ目を使用するかどうかのフラグ
-    let mut flag = vec![true; n + 2];
+    let diffs: Vec<usize> = a_list.windows(2).map(|w| w[1] - w[0]).collect();
 
-    // ある切れ目を取り除いたときに、従来の切れ目の左右の切れ目
-    // からなる領域の長さの最小
-    let mut min_len = usize::MAX;
+    let mut score: usize;
+    let mut score_min: usize = a_list.iter().min().copied().unwrap();
+    let mut score_max: usize = l;
 
-    for _ in 0..(n - k) {
-        min_len = usize::MAX;
-        let mut min_border = 1;
+    'outer: loop {
+        score = score_min + (score_max.abs_diff(score_min) / 2);
 
-        // 端の切れ目以外を走査
-        for i in 1..=n {
-            if !flag[i] {
-                continue;
+        // ピースの数
+        let mut pieces = 0;
+        // 一つずつの切れ目の長さ
+        let mut lengh = 0;
+
+        for &a in &diffs {
+            if lengh + a <= score {
+                lengh += a;
+            } else {
+                lengh = 0;
+                pieces += 1;
             }
 
-            // 新領域の左の border の位置
-            let x = {
-                let mut left = i - 1;
-                while !flag[left] {
-                    left -= 1;
-                }
-                a_list.get(left).copied().unwrap()
-            };
-
-            // 新領域の右の border の位置
-            let y = {
-                let mut right = i + 1;
-                while !flag[right] {
-                    right += 1
-                }
-                a_list.get(right).copied().unwrap()
-            };
-
-            if y - x < min_len {
-                min_len = y - x;
-                min_border = i;
+            if pieces > k {
+                score_min = score + 1;
+                continue 'outer;
             }
         }
-        flag[min_border] = false;
+
+        pieces += 1;
+
+        if score_min + 1 > score_max {
+            score = if pieces == k {
+                score_min + 1
+            } else {
+                score_min
+            };
+            break;
+        }
+        score_max = score;
     }
 
-    println!("{min_len}");
+    println!("{}", score);
 }
