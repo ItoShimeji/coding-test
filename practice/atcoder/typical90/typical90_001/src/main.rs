@@ -37,54 +37,42 @@ fn main() {
     let l: usize = sc.next();
     let k: usize = sc.next();
 
-    // 左右の端も含めた切れ目の配列
-    let mut a_list: Vec<usize> = Vec::with_capacity(n + 2);
-    a_list.push(0);
+    // 切れる位置に右端も含める
+    let mut a_list: Vec<usize> = Vec::with_capacity(n + 1);
     for _ in 0..n {
         a_list.push(sc.next());
     }
     a_list.push(l);
 
-    let diffs: Vec<usize> = a_list.windows(2).map(|w| w[1] - w[0]).collect();
-
-    let mut score: usize;
-    let mut score_min: usize = a_list.iter().min().copied().unwrap();
-    let mut score_max: usize = l;
-
-    'outer: loop {
-        score = score_min + (score_max.abs_diff(score_min) / 2);
-
-        // ピースの数
+    // 長さ x 以上のピースを K+1 個作れるかは単調である
+    // この関数では実際にそのような切り方を見つけるのではなく、作れるかどうかのみを判定
+    let can_make = |score: usize| -> bool {
         let mut pieces = 0;
-        // 一つずつの切れ目の長さ
-        let mut lengh = 0;
+        let mut last_cut = 0;
 
-        for &a in &diffs {
-            if lengh + a <= score {
-                lengh += a;
-            } else {
-                lengh = 0;
+        for &position in &a_list {
+            if position - last_cut >= score {
                 pieces += 1;
-            }
-
-            if pieces > k {
-                score_min = score + 1;
-                continue 'outer;
+                last_cut = position;
             }
         }
 
-        pieces += 1;
+        pieces >= k + 1
+    };
 
-        if score_min + 1 > score_max {
-            score = if pieces == k {
-                score_min + 1
-            } else {
-                score_min
-            };
-            break;
+    let mut ok = 0;
+    let mut ng = l + 1;
+
+    while ng - ok > 1 {
+        let score = (ok + ng) / 2;
+
+        // ここで ok + 2 == ng の状態で処理を行うと回答が決まる
+        if can_make(score) {
+            ok = score;
+        } else {
+            ng = score;
         }
-        score_max = score;
     }
 
-    println!("{}", score);
+    println!("{}", ok);
 }
