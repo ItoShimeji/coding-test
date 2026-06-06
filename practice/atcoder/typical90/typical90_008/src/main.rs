@@ -83,3 +83,25 @@ fn main() {
 
     println!("{}", count.atcoder);
 }
+
+// 配列 DP で一般化して書く場合:
+//
+// fn main() {
+//     let mut sc = Scanner::new();
+//     let _: usize = sc.next();
+//     let s: String = sc.next();
+//
+//     let target = b"atcoder";
+//     let mut dp = vec![0usize; target.len() + 1];
+//     dp[0] = 1;
+//
+//     for &c in s.as_bytes() {
+//         for i in (0..target.len()).rev() {
+//             if target[i] == c {
+//                 dp[i + 1] = (dp[i + 1] + dp[i]) % MOD;
+//             }
+//         }
+//     }
+//
+//     println!("{}", dp[target.len()]);
+// }
