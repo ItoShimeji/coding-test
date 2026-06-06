@@ -31,9 +31,55 @@ impl Scanner {
     }
 }
 
+struct Count {
+    a: usize,
+    at: usize,
+    atc: usize,
+    atco: usize,
+    atcod: usize,
+    atcode: usize,
+    atcoder: usize,
+}
+
+const MOD: usize = 1_000_000_007;
+
+impl Count {
+    fn new() -> Self {
+        Count {
+            a: 0,
+            at: 0,
+            atc: 0,
+            atco: 0,
+            atcod: 0,
+            atcode: 0,
+            atcoder: 0,
+        }
+    }
+
+    fn new_char(&mut self, c: u8) {
+        match c {
+            b'a' => self.a += 1,
+            b't' => self.at = (self.at + self.a) % MOD,
+            b'c' => self.atc = (self.atc + self.at) % MOD,
+            b'o' => self.atco = (self.atco + self.atc) % MOD,
+            b'd' => self.atcod = (self.atcod + self.atco) % MOD,
+            b'e' => self.atcode = (self.atcode + self.atcod) % MOD,
+            b'r' => self.atcoder = (self.atcoder + self.atcode) % MOD,
+            _ => {}
+        }
+    }
+}
+
 fn main() {
     let mut sc = Scanner::new();
+    let _: usize = sc.next();
+    let s: String = sc.next();
 
-    // TODO: implement
-    let _ = &mut sc;
+    let mut count = Count::new();
+
+    for &c in s.as_bytes() {
+        count.new_char(c);
+    }
+
+    println!("{}", count.atcoder);
 }
