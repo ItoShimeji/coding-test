@@ -1,7 +1,4 @@
-use std::{
-    io::{self, Read},
-    usize,
-};
+use std::io::{self, Read, Write};
 
 struct Scanner {
     input: Vec<u8>,
@@ -42,37 +39,25 @@ fn main() {
 
     let q: usize = sc.next();
 
-    'outer: for _ in 0..q {
+    // 標準出力を取得
+    let stdout = io::stdout();
+    // 出力先を取得
+    let mut out = io::BufWriter::new(stdout.lock());
+
+    for _ in 0..q {
         let b: usize = sc.next();
 
-        let mut left = 0;
-        let mut right = n - 1;
+        let i = a_list.partition_point(|&a| a < b);
+        let mut ans = usize::MAX;
 
-        if b <= a_list[left] {
-            println!("{}", a_list[left] - b);
-            continue;
+        if i < n {
+            ans = ans.min(a_list[i].abs_diff(b));
         }
-        if a_list[right] <= b {
-            println!("{}", b - a_list[right]);
-            continue;
+        if i > 0 {
+            ans = ans.min(a_list[i - 1].abs_diff(b));
         }
 
-        while left + 1 < right {
-            let mid = left + (right - left) / 2;
-
-            if b < a_list[mid] {
-                right = mid;
-            } else if b == a_list[mid] {
-                println!("0");
-                continue 'outer;
-            } else {
-                left = mid;
-            }
-        }
-
-        let b_to_mid = b.abs_diff(a_list[left + 1]);
-        let b_to_left = b.abs_diff(a_list[left]);
-
-        println!("{}", b_to_mid.min(b_to_left));
+        // buffer を指定して、記録
+        writeln!(out, "{}", ans).unwrap();
     }
 }
