@@ -122,12 +122,12 @@ fn main() {
                 }
 
                 // 上
-                if idx_r < h - 1 && matrix[idx_r + 1][idx_c] {
-                    uf.union(to_uf_index(r, c), to_uf_index(r + 1, c));
-                }
-                //下
                 if idx_r > 0 && matrix[idx_r - 1][idx_c] {
                     uf.union(to_uf_index(r, c), to_uf_index(r - 1, c));
+                }
+                // 下
+                if idx_r < h - 1 && matrix[idx_r + 1][idx_c] {
+                    uf.union(to_uf_index(r, c), to_uf_index(r + 1, c));
                 }
             }
             2 => {
@@ -145,5 +145,5 @@ fn main() {
         }
     }
 
-    println!("{output}")
+    print!("{output}")
 }
