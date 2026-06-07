@@ -33,7 +33,32 @@ impl Scanner {
 
 fn main() {
     let mut sc = Scanner::new();
+    let n: usize = sc.next();
+    let a: usize = sc.next();
+    let b: usize = sc.next();
+    let c: usize = sc.next();
 
-    // TODO: implement
-    let _ = &mut sc;
+    let mut coins = [a, b, c];
+    coins.sort();
+
+    let mut min_count = usize::MAX;
+    for i in 0..10000 {
+        for j in 0..10000 - i {
+            let sum = i * coins[0] + j * coins[1];
+            if n < sum {
+                break;
+            }
+
+            if (n - sum).is_multiple_of(coins[2]) {
+                let k = (n - sum) / coins[2];
+                min_count = min_count.min(i + j + k);
+
+                // coins は昇順に sort 済みのため、iを固定したまま j を大きくしたとしても今回の最小値よりも小さくなることはない
+                // そのため、内側のループを脱出できる
+                break;
+            }
+        }
+    }
+
+    println!("{min_count}");
 }
