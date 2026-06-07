@@ -33,7 +33,23 @@ impl Scanner {
 
 fn main() {
     let mut sc = Scanner::new();
+    let a = sc.next::<usize>();
+    let b = sc.next::<usize>();
+    let c = sc.next::<usize>();
 
-    // TODO: implement
-    let _ = &mut sc;
+    let is_yes = if a.is_power_of_two() && c.is_power_of_two() {
+        let log_a = a.trailing_zeros() as usize;
+        let log_c = c.trailing_zeros() as usize;
+
+        // ここでオーバーフローするなら log_a を n * log_c が超えたときに処理をやめるようにする
+        log_a < b * log_c
+    } else {
+        let a = a as f64;
+        let b = b as f64;
+        let c = c as f64;
+
+        a.log2() < b * c.log2()
+    };
+
+    println!("{}", if is_yes { "Yes" } else { "No" });
 }
