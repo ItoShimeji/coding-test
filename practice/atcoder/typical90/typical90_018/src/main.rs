@@ -42,21 +42,27 @@ fn main() {
     let y = sc.next::<usize>() as f64;
     let q: usize = sc.next();
 
-    let e_list: Vec<f64> = (0..q).map(|_| sc.next::<usize>() as f64).collect();
-
+    // pi 関連の定数
     let pi = f64::consts::PI;
     let frac_pi_2 = f64::consts::FRAC_PI_2;
+
+    // 半径
     let r = 0.5 * l;
 
     let mut output = String::new();
 
-    for &e in &e_list {
+    for _ in 0..q {
+        let e = sc.next::<usize>() as f64;
+
+        // e から計算できる位相の変化
         let phase = 2.0 * pi * e / t;
 
+        // 観覧車上の座標
         let y_e = -r * phase.sin();
         let z_e = r * ((phase - frac_pi_2).sin() + 1.0);
 
-        let gradient = z_e / (x.powf(2.0) + (y - y_e).powf(2.0)).sqrt();
+        // 像と観覧車上の直角三角形を考えて、傾きを求める
+        let gradient = z_e / (x.powi(2) + (y - y_e).powi(2)).sqrt();
 
         let deg = gradient.atan().to_degrees();
 
